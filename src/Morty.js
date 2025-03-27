@@ -7,7 +7,16 @@ import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import { Grid } from "@mui/material"
+
+const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+  });
+  
 
 const Morty = () => {
     const [posts, setPosts] = useState([]);
@@ -26,41 +35,59 @@ const Morty = () => {
     }, []);
 
     return (
-        <div>
-            <h1>Personagens</h1>
-            <Grid container spacing={2} justifyContent="center">
+        <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+        <div style={{ padding: '20px' }}>
+            <Typography variant="h3" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
+                Personagens Rick & Morty
+            </Typography>
+            
+            <Grid container spacing={4} justifyContent="center">
                 {!posts || posts.length === 0 ? (
-                    <Box sx={{ display: 'flex' }}>
-                        <CircularProgress />
-                    </Box>
-                ) : (posts.map(({ id, image, name, }) => (
-                    <div key={id} className="post">
-                            <Card sx={{ maxWidth: 345 }}>
+                    <Grid item>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                            <CircularProgress />
+                        </Box>
+                    </Grid>
+                ) : (
+                    posts.map(({ id, image, name, status, species, location, origin}) => (
+                        <Grid item key={id} xs={12} sm={6} md={4} lg={3}>
+                            <Card sx={{ 
+                                height: '100%',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                width: 300,
+                                margin: '0 auto'
+                            }}>
                                 <CardMedia
+                                    component="img"
                                     sx={{
                                         height: 300,
-                                        width: "100%", // Garante que ocupa toda a largura do card
-                                        objectFit: "cover", // Mantém a proporção e corta excessos para preencher
-                                        objectPosition: "center"
+                                        objectFit: "cover"
                                     }}
                                     image={image}
+                                    alt={name}
                                 />
-                                <CardContent>
+                                <CardContent sx={{ flexGrow: 1 }}>
                                     <Typography gutterBottom variant="h5" component="div">
                                         {name}
                                     </Typography>
-                                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                        { }
-                                    </Typography>
+                                    
+                                    <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>{status} - {species}</Typography>
+
+                                    <Typography sx={{ color: 'primary', mb: 1.5 }}>Origem: {origin.name}</Typography>
+
+                                    <Typography sx={{ color: 'primary' }}>Localização: {location.name}</Typography>
+
+
                                 </CardContent>
-
                             </Card>
-                    </div>
-
-                ))
+                        </Grid>
+                    ))
                 )}
             </Grid>
         </div>
+        </ThemeProvider>
     );
 }
 
